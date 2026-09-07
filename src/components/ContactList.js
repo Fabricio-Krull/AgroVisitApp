@@ -56,9 +56,9 @@ export default function ContactList(){
 
 const styles = StyleSheet.create({
     container: {flex: 1, paddingTop: 50, alignItems: 'center'},
-    button: {backgroundColor: '#34c759', padding: 15, borderRadius: 8, marginBottom: 20},
+    button: {backgroundColor: '#018d86', padding: 15, borderRadius: 8, marginBottom: 20},
     buttonText: {color: '#fff', fontWeight: 'bold'},
-    list: {width: '100%', paddingHorizontal: 20},
+    list: {width: '120%', paddingHorizontal: 20},
     contactItem: {padding: 15, borderBottomWidth: 1, borderBottomColor: '#cccccc'},
     contactName: {fontSize: 16, fontWeight: 'bold', color: '#fff'},
     contactNumber: {fontSize: 14, color: '#666'}

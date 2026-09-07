@@ -42,7 +42,7 @@ export default function MotionSensors(){
 
 const styles = StyleSheet.create({
     container: {flex: 1, justifyContent: 'center', padding: 20},
-    sensorSection: {backgroundColor: '#ffffff', padding: 20, borderRadius: 8, marginVertical: 10, elevation: 2},
-    sensorTitle: {fontSize: 18, fontWeight: 'bold', marginBottom: 10, color: '#5856d6'},
-    textData: {fontSize: 16, fontFamily: 'monospace', marginVertical: 2}
+    sensorSection: {backgroundColor: '#719676', padding: 20, borderRadius: 8, marginVertical: 10, elevation: 2},
+    sensorTitle: {fontSize: 18, fontWeight: 'bold', marginBottom: 10, color: '#ffffff'},
+    textData: {fontSize: 16, fontFamily: 'monospace', marginVertical: 2, color: '#ffffff'}
 })

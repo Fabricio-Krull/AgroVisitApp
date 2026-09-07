@@ -43,8 +43,8 @@ export default function GlobalGeolocator() {
 
 const styles = StyleSheet.create({
     container: {flex: 1, justifyContent: 'center', alignItems: 'center'},
-    button: {backgroundColor: '#ff9500', padding: 15, borderRadius: 8},
+    button: {backgroundColor: '#719676', padding: 15, borderRadius: 8},
     buttonText: {color: '#ffffff', fontWeight: 'bold'},
-    posPanel: {marginTop: 30, padding: 20, backgroundColor: '#ffffff', borderRadius: 8, elevation: 2},
+    posPanel: {marginTop: 30, padding: 20, backgroundColor: '#d0f6ac', borderRadius: 8, elevation: 2},
     dataText: {fontSize: 16, marginVertical: 5, fontFamily: 'monospace'}
 });

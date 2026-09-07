@@ -39,7 +39,7 @@ export default function ImageSelector(){
 
 const styles = StyleSheet.create({
     container: { flex:1, justifyContent: 'center', alignItems: 'center'},
-    button: { backgroundColor: '#007aff', padding: 15, borderRadius: 8},
+    button: { backgroundColor: '#018d86', padding: 15, borderRadius: 8},
     buttonText: { color: '#ffffff', fontWeight: 'bold'},
     imagePreview: { width: 300, height: 300, marginTop: 20, borderRadius: 8}
 });

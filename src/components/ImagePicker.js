@@ -16,7 +16,7 @@ export default function ImageSelector(){
         }
 
         const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaType.Images,
+            // mediaTypes: ImagePicker.MediaType.Images, //retorna erro
             allowsEditing: true,
             aspect: [1,1],
             quality: 1,

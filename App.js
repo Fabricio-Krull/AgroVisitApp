@@ -1,25 +1,75 @@
-import { StyleSheet, Text, View } from 'react-native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { NavigationContainer } from '@react-navigation/native';
-import ImageSelector from './src/components/ImagePicker.js';
+import { StyleSheet, View, Dimensions, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+
 import ContactList from './src/components/ContactList.js';
 import GlobalGeolocator from './src/components/GlobalGeolocator.js';
+import ImageSelector from './src/components/ImagePicker.js';
+import MotionSensors from './src/components/Sensors.js';
 
-const Stack = createStackNavigator();
+import House from 'lucide-react-native/icons/house';
+import MapPin from 'lucide-react-native/icons/map-pin';
+import Phone from 'lucide-react-native/icons/phone';
+import Camera from 'lucide-react-native/icons/camera';
+import Siren from 'lucide-react-native/icons/siren';
+
+const width = Dimensions.get('window').width;
+const height = Dimensions.get('window').height;
 
 export default function App() {
+
+  const [section, setSection] = useState('home');
+
+  const changeSection = (section) => {
+    if(section === "gps") setSection(<GlobalGeolocator/>)
+    else if(section === "contacts") setSection(<ContactList/>)
+    else if(section === "image") setSection(<ImageSelector/>)
+    else if(section === "sensors") setSection(<MotionSensors/>)
+  }
+
   return (
         <View style={styles.container}>
-          <GlobalGeolocator/>
+          <View style={styles.header}>
+
+            <TouchableOpacity style={styles.button} onPress={() => changeSection("gps")}>
+                <MapPin/>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.button} onPress={() => changeSection("contacts")}>
+                <Phone/>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.button} onPress={() => changeSection("home")}>
+              <House/>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.button} onPress={() => changeSection("image")}>
+              <Camera/>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.button} onPress={() => changeSection("sensors")}>
+              <Siren/>
+            </TouchableOpacity>
+            
+          </View>
+          <View style={styles.content}>
+            {section}
+          </View>
         </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    width: width,
+    height: height,
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#4d2b2b',
     alignItems: 'center',
     justifyContent: 'center',
   },
+  header: {backgroundColor: '#4d1211', width: width, height: 100, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 25, position: 'absolute', top: 0},
+  button: {backgroundColor: '#64493b', height: 40, width: 40, borderRadius: 100, justifyContent: 'center', alignItems: 'center'},
+  buttonText: {color: '#fff', fontSize: 10},
+  content: {height: height - 100}
+
 });

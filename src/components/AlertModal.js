@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Modal, TouchableOpacity, Text } from 'react-native';
 import Checkbox from 'expo-checkbox';
 
-export default function AlertModal({ visibleParam, onCancel, onAllow, onDeny, resolveCheckValue }){
+export default function AlertModal({ visibleParam, onCancel, onAllow, onDeny, resolveAlertValues }){
 
     const [visible, setVisible] = useState(visibleParam);
 
@@ -41,8 +41,8 @@ export default function AlertModal({ visibleParam, onCancel, onAllow, onDeny, re
                     <TouchableOpacity 
                         style={[styles.btn, styles.btnMid]} 
                         onPress={() => {
-                            onDeny();
-                            resolveCheckValue(isChecked);
+                            resolveAlertValues(isChecked, 'denied');
+                            onDeny(isChecked);
                         }}
                     >
                         <Text>Negar</Text>
@@ -50,9 +50,9 @@ export default function AlertModal({ visibleParam, onCancel, onAllow, onDeny, re
 
                     <TouchableOpacity 
                         style={[styles.btn, styles.btnRight]} 
-                        onPress={() => {
-                            if(onAllow) onAllow(isChecked)
-                            resolveCheckValue(isChecked);
+                        onPress={async () => {
+                            resolveAlertValues(isChecked, 'granted');
+                            onAllow(isChecked);
                         }}
                     >
                         <Text>Permitir</Text>

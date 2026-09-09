@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image, Alert, Linking } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
 import AlertModal from './AlertModal';
 
@@ -13,10 +14,38 @@ export default function ImageSelector(){
 
     const [modalVisible, setModalVisible] = useState(false);
 
-    const resolveAlertValues = (isChecked, perm) => {
-        setImageData({...imageData, perm: perm});
-        setImageData({...imageData, canAskAgain: !isChecked});
+    const saveDataOnStorage = async (data) => {
+        try {
+            await AsyncStorage.setItem("imageData", JSON.stringify(data));
+        }
+        catch (error) {
+            console.log("Error ao salvar:", error);
+        }
     }
+
+    useEffect(() => {
+        const loadStorageData = async () => {
+            try{
+                if(!(await AsyncStorage.getItem("imageData"))){
+                    saveDataOnStorage();
+                }
+                else{
+                    setImageData(JSON.parse(await AsyncStorage.getItem("imageData")));
+                }
+            }
+            catch(error){
+                console.log("Erro ao tentar recarregar dados salvos" + error);
+            }
+        };
+
+        loadStorageData();
+        
+    }, []);
+
+    // useEffect(() => {
+    //     console.log(JSON.stringify(AsyncStorage.getItem("imageData")));
+    //     saveDataOnStorage();
+    // }, [imageData]);
 
     const selectImage = async () => {
         
@@ -35,7 +64,11 @@ export default function ImageSelector(){
                     }},
 
                     { text: "Ir às configurações", onPress: async () => {
-                        setImageData({...imageData, canAskAgain: true});
+                        setImageData(prev => ({
+                            ...prev,
+                            canAskAgain: true,
+                        }));
+                        saveDataOnStorage();
                         Linking.openSettings();
                     }},
                 ]
@@ -52,23 +85,22 @@ export default function ImageSelector(){
 
     return(
         <View style={styles.container}>
-            {imageData.canAskAgain === true && <AlertModal visibleParam={modalVisible} resolveAlertValues={resolveAlertValues}
+            {imageData.canAskAgain === true && <AlertModal visibleParam={modalVisible}
                 onDeny={(isChecked) => {
                     setImageData(prev => ({
                         ...prev,
                         perm: 'denied',
                         canAskAgain: !isChecked
                     }));
+                    saveDataOnStorage();
                     setModalVisible(false);
                 }}
                 onAllow={async (isChecked) => {
-
-                    setImageData(prev => ({
-                        ...prev,
+                    const updatedData = {
+                        ...imageData,
                         perm: 'granted',
                         canAskAgain: !isChecked
-                    }));
-                    setModalVisible(false);
+                    };
 
                     const result = await ImagePicker.launchImageLibraryAsync({
                         allowsEditing: true,
@@ -77,11 +109,15 @@ export default function ImageSelector(){
                     });
 
                     if (!result.canceled) {
-                        setImageData(prev => ({
-                            ...prev,
-                            uri: result.assets[0].uri
-                        }));
+                        updatedData.uri = result.assets[0].uri;
                     }
+
+                    setImageData(updatedData);
+
+                    await saveDataOnStorage(updatedData);
+
+                    setModalVisible(false);
+
                 }}
                 onCancel={() => {
                     setModalVisible(false);

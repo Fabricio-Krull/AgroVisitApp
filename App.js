@@ -1,4 +1,4 @@
-import { StyleSheet, View, Dimensions, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Dimensions, TouchableOpacity, Text } from 'react-native';
 import React, { useState, useEffect } from 'react';
 
 import ContactList from './src/components/ContactList.js';
@@ -7,6 +7,7 @@ import ImageSelector from './src/components/ImagePicker.js';
 import MotionSensors from './src/components/Sensors.js';
 
 import HomeScreen from './src/screens/HomeScreen.js';
+import SensorScreen from './src/screens/SensorHistoryScreen.js';
 
 import House from 'lucide-react-native/icons/house';
 import MapPin from 'lucide-react-native/icons/map-pin';
@@ -30,8 +31,9 @@ export default function App() {
     if(section === "gps") setSection(<GlobalGeolocator/>)
     else if(section === "contacts") setSection(<ContactList/>)
     else if(section === "image") setSection(<ImageSelector/>)
-    else if(section === "sensors") setSection(<MotionSensors/>)
+    else if(section === "sensors") setSection(<MotionSensors screenChange={() => setSection("sensorHistory")}/>)
     else if(section === "home") setSection(<HomeScreen/>)
+    else if(section === "sensorHistory") setSection(<SensorScreen/>)
   }
 
   const styles = StyleSheet.create({

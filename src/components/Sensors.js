@@ -1,9 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, Text, View, Alert, TouchableOpacity } from 'react-native';
 import { Accelerometer, Gyroscope } from 'expo-sensors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function MotionSensors(){
+export default function MotionSensors({screenChange}){
+
+    const HISTORY_KEY = "sensorData";
+
+    const accelRef = useRef({x: 0, y: 0, z: 0});
+    const gyroRef = useRef({x: 0, y: 0, z: 0});
 
     const [accelData, setAccelData] = useState({x: 0, y: 0, z: 0});
     const [gyroData, setGyroData] = useState({x: 0, y: 0, z: 0});
@@ -13,6 +18,23 @@ export default function MotionSensors(){
         accel: null,
         date: null
     });
+
+    const addToHistory = async (data) => {
+        try{
+            if(!isSecureLocked){
+                const currentHistoryString = await AsyncStorage.getItem(HISTORY_KEY);
+                const currentHistory = currentHistoryString ? JSON.parse(currentHistoryString) : [];
+    
+                const newHistory = [data, ...currentHistory];
+                const limitedHistory = newHistory.slice(0, 50);
+    
+                await AsyncStorage.setItem(HISTORY_KEY, JSON.stringify(limitedHistory));
+            }
+        }
+        catch(error){
+            console.log("Erro ao salvar dados no histórico: " + error);
+        }
+    }
 
     const [isSecureLocked, setIsSecureLocked] = useState(false);
 
@@ -24,6 +46,7 @@ export default function MotionSensors(){
         Gyroscope.setUpdateInterval(500);
 
         const accelSub = Accelerometer.addListener(data => {
+            accelRef.current = data;
             if(!isSecureLocked){
                 setAccelData(data);
 
@@ -31,7 +54,7 @@ export default function MotionSensors(){
             const safetyCheck = (data.x*data.x + data.y*data.y + data.z*data.z);
 
             if(safetyCheck >= 2.0){
-                alert(JSON.stringify(sensorData));
+                // alert(JSON.stringify(sensorData));
                 setIsSecureLocked(true);
                 Alert.alert(
                     "Aviso",
@@ -44,46 +67,37 @@ export default function MotionSensors(){
                 );
             }
         });
-        const gyroSub = Gyroscope.addListener(data => setGyroData(data));
 
+        const gyroSub = Gyroscope.addListener(data => {
+            gyroRef.current = data;
+            setGyroData(data);
+        });
+
+        const intervalId = setInterval(() => {
+            if(!isSecureLocked){
+                const snapshot = {
+                    accel: accelRef.current,
+                    gyro: gyroRef.current,
+                    date: Date.now()
+                }
+                addToHistory(snapshot);
+            }
+        }, 5000);
+
+        setSensorData({...sensorData, 
+            gyro: gyroData,
+            accel: accelData,
+            date: Date.now()
+        });
         return () => {
-            setSensorData({...sensorData, 
-                gyro: gyroData,
-                accel: accelData,
-                date: Date.now()
-            });
             accelSub.remove();
             gyroSub.remove();
         };
-    }, []);
-
-    useEffect(() => {
-        setInterval(async () => {
-            try {
-                const storedSensorData = JSON.stringify(await AsyncStorage.getItem("sensorData"));
-                let dataList = [];
-
-                if(!storedSensorData){
-                    dataList.push(sensorData);
-                    await AsyncStorage.setItem("sensorData", JSON.stringify(dataList));
-                }
-                else{
-                    storedSensorData.push(sensorData);
-                    await AsyncStorage.setItem("sensorData", JSON.stringify(storedSensorData));
-                }
-
-            }
-            catch (error) {
-                console.log("Error ao salvar:", error);
-            }
-        }, 5000);
-    }, []);
+    }, [isSecureLocked]);
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.historyBtn} onPress={async () => {
-                alert(JSON.stringify(await AsyncStorage.getItem("sensorData")));
-            }}>
+            <TouchableOpacity style={styles.historyBtn} onPress={screenChange}>
                 <Text style={{color: '#fff', fontWeight: 'bold'}}>Ver histórico</Text>
             </TouchableOpacity>
             <View style={styles.sensorSection}>

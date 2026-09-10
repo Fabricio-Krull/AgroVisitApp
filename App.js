@@ -5,6 +5,7 @@ import ContactList from './src/components/ContactList.js';
 import GlobalGeolocator from './src/components/GlobalGeolocator.js';
 import ImageSelector from './src/components/ImagePicker.js';
 import MotionSensors from './src/components/Sensors.js';
+
 import HomeScreen from './src/screens/HomeScreen.js';
 
 import House from 'lucide-react-native/icons/house';

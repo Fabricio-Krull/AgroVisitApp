@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList } from 'react-native';
+import { View, Text, FlatList, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SensorScreen() {
@@ -16,7 +16,7 @@ export default function SensorScreen() {
 
         const currentHistory = currentHistoryString ? JSON.parse(currentHistoryString) : [];
 
-        console.log(currentHistory);
+        // console.log(currentHistory);
 
         setHistory(currentHistory);
       }
@@ -29,16 +29,18 @@ export default function SensorScreen() {
   }, []);
 
   return (
-        <View>
+        <View style={styles.container}>
+          <Text style={styles.title}>Histórico de Sensores</Text>
           <FlatList
               data={history}
               keyExtractor={(item) => item.id}
               renderItem={({item}) => (
-                  <View >
+                  <View style={styles.item}>
                       {item.accel && item.gyro && item.date && (
                           <>
-                              <Text style={styles.contactName}>{item.name}</Text>
-                              <Text style={styles.contactNumber}>{item.phoneNumbers[0].number}</Text>
+                              <Text style={styles.text}>Data: {item.date}</Text>
+                              <Text style={styles.text}>Acelerômetro: X: {item.accel.x?.toFixed(2)} - Y: {item.accel.y?.toFixed(2)} - Z: {item.accel.z?.toFixed(2)}</Text>
+                              <Text style={styles.text}>Giroscópio: X: {item.gyro.x?.toFixed(2)} - Y: {item.gyro.y?.toFixed(2)} - Z: {item.gyro.z?.toFixed(2)}</Text>
                           </>
                       )}
                   </View>
@@ -48,3 +50,34 @@ export default function SensorScreen() {
         </View>
   );
 }
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      // backgroundColor: '#000000',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    list: {
+      top: 100,
+      height: '90%',
+      width: '100%',
+      paddingHorizontal: 20,
+    },
+    text: {
+      color: '#FFFFFF',
+      fontSize: 12,
+      marginBottom: 10,
+    },
+    item: {
+      backgroundColor: '#333333',
+      padding: 10,
+      marginBottom: 10,
+    },
+    title: {
+      color: '#ffef5c',
+      fontWeight: 'bold',
+      fontSize: 20,
+      top: 50
+    }
+  });

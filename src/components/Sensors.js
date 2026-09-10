@@ -26,7 +26,7 @@ export default function MotionSensors({screenChange}){
                 const currentHistory = currentHistoryString ? JSON.parse(currentHistoryString) : [];
     
                 const newHistory = [data, ...currentHistory];
-                const limitedHistory = newHistory.slice(0, 50);
+                const limitedHistory = newHistory.slice(0, 10);
     
                 await AsyncStorage.setItem(HISTORY_KEY, JSON.stringify(limitedHistory));
             }
@@ -75,10 +75,11 @@ export default function MotionSensors({screenChange}){
 
         const intervalId = setInterval(() => {
             if(!isSecureLocked){
+                const now = new Date();
                 const snapshot = {
                     accel: accelRef.current,
                     gyro: gyroRef.current,
-                    date: Date.now()
+                    date: `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`
                 }
                 addToHistory(snapshot);
             }
@@ -92,6 +93,7 @@ export default function MotionSensors({screenChange}){
         return () => {
             accelSub.remove();
             gyroSub.remove();
+            clearInterval(intervalId);
         };
     }, [isSecureLocked]);
 

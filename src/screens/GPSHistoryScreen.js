@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function SensorScreen() {
+export default function GpsScreen() {
 
-  const HISTORY_KEY = "sensorData";
+  const HISTORY_KEY = "gpsData";
 
   const [history, setHistory] = useState([]);
 
@@ -30,18 +30,19 @@ export default function SensorScreen() {
 
   return (
         <View style={styles.container}>
-          <Text style={styles.title}>Histórico de Sensores</Text>
+          <Text style={styles.title}>Histórico de Coordenadas</Text>
           <FlatList
               data={history}
               keyExtractor={(item) => item.id}
               renderItem={({item}) => (
                   <View style={styles.item}>
-                      {item.accel && item.gyro && item.date && (
-                          <>
-                              <Text style={styles.text}>Data: {item.date}</Text>
-                              <Text style={styles.text}>Acelerômetro: X: {item.accel.x?.toFixed(2)} - Y: {item.accel.y?.toFixed(2)} - Z: {item.accel.z?.toFixed(2)}</Text>
-                              <Text style={styles.text}>Giroscópio: X: {item.gyro.x?.toFixed(2)} - Y: {item.gyro.y?.toFixed(2)} - Z: {item.gyro.z?.toFixed(2)}</Text>
-                          </>
+                      {item.coords.latitude && item.coords.longitude && item.coords.accuracy && (
+                        <>
+                            <Text style={styles.text}>Data: {item.date}</Text>
+                            <Text style={styles.text}>Latitude: {item.coords.latitude}</Text>
+                            <Text style={styles.text}>Longitude: {item.coords.longitude}</Text>
+                            <Text style={styles.text}>Margem de erro: {item.coords.accuracy?.toFixed(2)}</Text>
+                        </>
                       )}
                   </View>
               )}

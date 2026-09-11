@@ -23,7 +23,9 @@ export default function MotionSensors({screenChange}){
         try{
             if(!isSecureLocked){
                 const currentHistoryString = await AsyncStorage.getItem(HISTORY_KEY);
-                const currentHistory = currentHistoryString ? JSON.parse(currentHistoryString) : [];
+                
+                const parsedData = currentHistoryString ? JSON.parse(currentHistoryString) : [];
+                const currentHistory = Array.isArray(parsedData) ? parsedData : [];
     
                 const newHistory = [data, ...currentHistory];
                 const limitedHistory = newHistory.slice(0, 10);
@@ -57,8 +59,8 @@ export default function MotionSensors({screenChange}){
                 // alert(JSON.stringify(sensorData));
                 setIsSecureLocked(true);
                 Alert.alert(
-                    "Aviso",
-                    "Foi detectada uma movimentação brusca possivelmente acidental. Envio de dados interrompido.",
+                    "Instabilidade Física Detectada",
+                    "Foi detectada uma movimentação brusca possivelmente acidental. Envio de dados interrompido. Para reativar o envio, desative a trava de segurança.",
                     [
                         {text: "Desativar trava de segurança", onPress: () => {
                             setIsSecureLocked(false);

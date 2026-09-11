@@ -8,33 +8,20 @@ import MotionSensors from './src/components/Sensors.js';
 
 import HomeScreen from './src/screens/HomeScreen.js';
 import SensorScreen from './src/screens/SensorHistoryScreen.js';
+import GpsScreen from './src/screens/GPSHistoryScreen.js';
 
 import House from 'lucide-react-native/icons/house';
 import MapPin from 'lucide-react-native/icons/map-pin';
 import Phone from 'lucide-react-native/icons/phone';
 import Camera from 'lucide-react-native/icons/camera';
 import Siren from 'lucide-react-native/icons/siren';
-import Settings from 'lucide-react-native/icons/settings';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
 export default function App() {
 
-  const [section, setSection] = useState("home");
-
-  useEffect(() => {
-    changeSection(section);
-  }, [section]);
-
-  const changeSection = (section) => {
-    if(section === "gps") setSection(<GlobalGeolocator/>)
-    else if(section === "contacts") setSection(<ContactList/>)
-    else if(section === "image") setSection(<ImageSelector/>)
-    else if(section === "sensors") setSection(<MotionSensors screenChange={() => setSection("sensorHistory")}/>)
-    else if(section === "home") setSection(<HomeScreen/>)
-    else if(section === "sensorHistory") setSection(<SensorScreen/>)
-  }
+  const [section, setSection] = useState(<HomeScreen/>);
 
   const styles = StyleSheet.create({
     container: {
@@ -55,23 +42,23 @@ export default function App() {
         <View style={styles.container}>
           <View style={styles.header}>
 
-            <TouchableOpacity style={styles.button} onPress={() => changeSection("gps")}>
+            <TouchableOpacity style={styles.button} onPress={() => setSection(<GlobalGeolocator screenChange={() => setSection(<GpsScreen/>)}/>)}>
                 <MapPin/>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.button} onPress={() => changeSection("contacts")}>
+            <TouchableOpacity style={styles.button} onPress={() => setSection(<ContactList/>)}>
                 <Phone/>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.button} onPress={() => changeSection("home")}>
+            <TouchableOpacity style={styles.button} onPress={() => setSection(<HomeScreen/>)}>
               <House/>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.button} onPress={() => changeSection("image")}>
+            <TouchableOpacity style={styles.button} onPress={() => setSection(<ImageSelector/>)}>
               <Camera/>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.button} onPress={() => changeSection("sensors")}>
+            <TouchableOpacity style={styles.button} onPress={() => setSection(<MotionSensors screenChange={() => setSection(<SensorScreen/>)}/>)}>
               <Siren/>
             </TouchableOpacity>
             

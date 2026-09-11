@@ -52,5 +52,5 @@ const styles = StyleSheet.create({
     gap: 30,
   },
   text: {color: '#ffffff'},
-  section: {flexDirection: 'row', alignItems: 'center'}
+  section: {flexDirection: 'row', alignItems: 'center', gap: 10}
 });
